@@ -1,0 +1,77 @@
+#include "sort.h"
+#include <stdio.h>
+
+/**
+ * swap_nodes - Swaps two nodes in a doubly linked list
+ * @a: Pointer to the first node
+ * @b: Pointer to the second node
+ */
+void swap_nodes(listint_t **a, listint_t **b)
+{
+    listint_t *temp = *a;
+    *a = *b;
+    *b = temp;
+
+    if (*a != NULL)
+        (*a)->prev = temp->prev;
+    if (*b != NULL)
+        (*b)->prev = temp;
+    if (temp->prev != NULL)
+        temp->prev->next = *b;
+    temp->prev = *b;
+    temp->next = (*b)->next;
+    (*b)->next = temp;
+}
+
+/**
+ * cocktail_sort_list - Sorts a doubly linked list of integers in ascending order
+ *                       using the Cocktail shaker sort algorithm
+ * @list: Pointer to a pointer to the head of the list
+ */
+void cocktail_sort_list(listint_t **list)
+{
+    int swapped = 1;
+    listint_t *start = NULL;
+    listint_t *end = NULL;
+
+    if (list == NULL || *list == NULL)
+        return;
+
+    while (swapped)
+    {
+        swapped = 0;
+        for (start = *list; start->next != end; start = start->next)
+        {
+            if (start->n > start->next->n)
+            {
+                swap_nodes(&start, &(start->next));
+                if (!start->prev)
+                    *list = start;
+                swapped = 1;
+                print_list(*list);
+            }
+        }
+        if (!swapped)
+            break;
+
+        swapped = 0;
+        for (end = start; end->prev != start; end = end->prev)
+        {
+            if (end->n < end->prev->n)
+            {
+                swap_nodes(&(end->prev), &end);
+                if (!end->prev)
+                    *list = end;
+                swapped = 1;
+                print_list(*list);
+            }
+        }
+    }
+}
+
+
+And here are the time complexity analyses for Cocktail shaker sort:
+
+- Best case: \( O(n) \) - When the list is already sorted, the algorithm will make one pass without any swaps.
+- Average case: \( O(n^2) \) - In the average case, the algorithm requires multiple passes through the list, swapping adjacent elements as needed.
+- Worst case: \( O(n^2) \) - When the list is sorted in reverse order, the algorithm requires the maximum number of passes and swaps.
