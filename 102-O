@@ -1,0 +1,78 @@
+#include "sort.h"
+#include <stdio.h>
+#include <stdlib.h>
+
+/**
+ * counting_sort - Sorts an array of integers in ascending order using Counting sort.
+ * @array: The array to be sorted.
+ * @size: The size of the array.
+ */
+void counting_sort(int *array, size_t size)
+{
+    int max = 0;
+    size_t i;
+    
+    /* Find the maximum value in the array */
+    for (i = 0; i < size; i++) {
+        if (array[i] > max) {
+            max = array[i];
+        }
+    }
+
+    /* Create a counting array of size max + 1 */
+    int *count = malloc(sizeof(int) * (max + 1));
+    if (count == NULL)
+        return;
+
+    /* Initialize counting array with zeros */
+    for (i = 0; i <= max; i++) {
+        count[i] = 0;
+    }
+
+    /* Count the occurrences of each element */
+    for (i = 0; i < size; i++) {
+        count[array[i]]++;
+    }
+
+    /* Print the counting array */
+    printf("\n");
+    for (i = 0; i <= max; i++) {
+        printf("%d%s", count[i], (i == max) ? "\n" : ", ");
+    }
+
+    /* Modify the counting array to contain cumulative counts */
+    for (i = 1; i <= max; i++) {
+        count[i] += count[i - 1];
+    }
+
+    /* Create a temporary array to hold the sorted output */
+    int *output = malloc(sizeof(int) * size);
+    if (output == NULL) {
+        free(count);
+        return;
+    }
+
+    /* Place each element in its correct position in the output array */
+    for (i = size - 1; i < size; i--) {
+        output[count[array[i]] - 1] = array[i];
+        count[array[i]]--;
+    }
+
+    /* Copy the sorted elements from the temporary array back to the original array */
+    for (i = 0; i < size; i++) {
+        array[i] = output[i];
+    }
+
+    /* Free dynamically allocated memory */
+    free(count);
+    free(output);
+}
+```
+
+Big O notations of the time complexity of the Counting sort algorithm:
+
+- Best case: O(n + k)
+- Average case: O(n + k)
+- Worst case: O(n + k)
+
+In the above notations, `n` is the number of elements in the input array, and `k` is the range of the input (the maximum value minus the minimum value).
